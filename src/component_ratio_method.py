@@ -1,10 +1,13 @@
-import math, sqlite3, numbers
+import math, sqlite3, numbers, os
 
 class Component_Ratio_Method(object):
 
     def __init__(self):
+        self.WATER_WEIGHT = 62.4 # lbs of ft^3 of water
+
         # uses the coefficients SQLite DB to get various species coefficients 
-        self.db = 'coefficients.db'
+        self.current_dir = os.path.dirname(__file__)
+        self.db = os.path.join(self.current_dir, 'coefficients.db')
         try:
             self.connect = sqlite3.connect(self.db)
         except:
@@ -36,7 +39,7 @@ class Component_Ratio_Method(object):
 
     def _getSpeciesData(self, species_cd):
 
-        # checks for proper data types
+        # # checks for proper data types
         if not type(species_cd) == int:
             raise Exception('Species code must be an integer.')
 
@@ -65,6 +68,7 @@ class Component_Ratio_Method(object):
                     species['jenkins_total_b1'] + 
                     species['jenkins_total_b2'] * 
                     math.log(dbh * 2.54))
+
         result *= 2.2046
 
         return result
@@ -95,7 +99,7 @@ class Component_Ratio_Method(object):
         result =  math.exp( 
                     species['jenkins_stem_bark_ratio_b1'] + 
                     species['jenkins_stem_bark_ratio_b2'] / 
-                    (diameter * 2.54))
+                    (dbh * 2.54))
 
         return result
 
@@ -111,32 +115,6 @@ class Component_Ratio_Method(object):
                     species['jenkins_foliage_ratio_b1'] + 
                     species['jenkins_foliage_ratio_b2'] / 
                     (dbh * 2.54))
-
-        return result
-
-
-    def _calcDiameterInsideBark(self, species, dbh, height):
-
-        # checks for proper data types
-        self._isPositiveNumber('DBH', dbh)
-        self._isPositiveNumber('Height', height)
-        self._isNumber('Raile Stump DIB B1', species['raile_stump_dib_b1'])
-        self._isNumber('Raile Stump DIB B2', species['raile_stump_dib_b2'])
-
-        result = ((dbh * species['raile_stump_dib_b1']) + 
-                  (dbh * species['raile_stump_dib_b2'] * (4.5 - height) / (height + 1)))
-
-        return result
-
-
-    def _calcDiameterOutsideBark(self, species, dbh, height):
-
-        # checks for proper data types
-        self._isPositiveNumber('DBH', dbh)
-        self._isPositiveNumber('Height', height)
-        self._isNumber('Raile Stump DOB B1', species['raile_stump_dob_b1'])
-
-        result = dbh + (dbh * species['raile_stump_dob_b1'] * (4.5 - height) / (height + 1))
 
         return result
 
@@ -176,14 +154,57 @@ class Component_Ratio_Method(object):
         return self._calcTotalAGBioMassJenkins(species, dbh) * self._calcRootRatio(species, dbh)
 
 
-    def _calcStumpBiomassLbs(self, species, dbh, height):
-        # todo implement this calc
+    def _stumpVolumeEquation(self, a, b, height):
+        value =  math.pow((a - b), 2) * height
+        value += (11 * b)*(a - b) * math.log( height + 1)
+        value -= (30.25 / (height + 1 )) * math.pow(b,2)
 
-        outsideVolume = (math.pi * 0.1 * self._calcDiameterOutsideBark) * 10.0
-        insideVolume = (math.pi * 0.1 * self._calcDiameterInsideBark) * 10.0
-        barkVolume = outsideVolume - insideVolume
+        return value
 
+
+    def _calcStumpVolumeOutsideBark(self, species, dbh):
+
+        # checks for proper data types
+        self._isPositiveNumber('DBH', dbh)
+        self._isNumber('Raile Stump DOB B1', species['raile_stump_dob_b1'])
+
+        scaler = ( math.pi * ( math.pow( dbh ,2 ) )) / 576.0
+        upperLimit = self._stumpVolumeEquation( 1.0, species['raile_stump_dob_b1'], 1.0)
+        lowerLimit = self._stumpVolumeEquation( 1.0, species['raile_stump_dob_b1'], 0.0)
+
+        return scaler * ( upperLimit - lowerLimit )
+
+    
+    def _calcStumpVolumeInsideBark(self, species, dbh):
+
+        # checks for proper data types
+        self._isPositiveNumber('DBH', dbh)
+        self._isNumber('Raile Stump DIB B1', species['raile_stump_dib_b1'])
+        self._isNumber('Raile Stump DIB B2', species['raile_stump_dib_b2'])
+
+        scaler = ( math.pi * ( math.pow( dbh ,2 ) )) / 576.0
+        upperLimit = self._stumpVolumeEquation( species['raile_stump_dib_b1'], species['raile_stump_dib_b2'], 1.0)
+        lowerLimit = self._stumpVolumeEquation( species['raile_stump_dib_b1'], species['raile_stump_dib_b2'], 0.0)
+
+        return scaler * ( upperLimit - lowerLimit )
+
+
+    def _calcComponentRatioAdjustmentFactor(self):
+        # TODO implement this method
         return 0
+
+
+    def _calcStumpBiomassLbs(self, species, dbh):
+
+        woodSPGravity = species['wood_spgr_greenvol_drywt']
+        barkSPGravity = species['bark_spgr_greenvol_drywt']
+        volInsideBark = self._calcStumpVolumeInsideBark(species, dbh)
+        volOutsideBark = self._calcStumpVolumeOutsideBark(species, dbh)
+        stumpWoodBioMass = volInsideBark * woodSPGravity * self.WATER_WEIGHT
+        stumpBarkBioMass = (volOutsideBark - volInsideBark) * barkSPGravity * self.WATER_WEIGHT
+
+        # TODO add parameters to _calcComponentRatioAdjustmentFactor 
+        return ( stumpWoodBioMass + stumpBarkBioMass ) * self._calcComponentRatioAdjustmentFactor()
 
 
     def _calcTopBiomassJenkinsLbs(self, species, dbh, height):
@@ -193,36 +214,47 @@ class Component_Ratio_Method(object):
                 self._calcFoliageBiomassJenkinsLbs(species, dbh) - 
                 self._calcStumpBiomassLbs(species, dbh, height))
 
-    def getVOLCFSND(region)
-
-    def _calcDRYBIO_BOLE(self):
 
 
-    def convertSoundVolumeToBiomass(self):
-        print('convertSoundVolumeToBioMass')
 
-    def calcBarkBiomass(self):
-        print('calculateBarkBioMass')
+    #def getGrossVolValues(self, species)
 
-    def calcTreeBiomass(self):
-        print('calculateTreeBioMass')
+    # def getVOLCFGRS(self, region, x1, x2, x3, v1, v2):
 
-    def calcStumpVolume(self):
-        print('calculateStumpVolume')
+
+    def getVOLCFSND(self, region_id):
+
+
+    # def _calcDRYBIO_BOLE(self):
+
+
+    # def convertSoundVolumeToBiomass(self):
+    #     print('convertSoundVolumeToBioMass')
+
+    # def calcBarkBiomass(self):
+    #     print('calculateBarkBioMass')
+
+    # def calcTreeBiomass(self):
+    #     print('calculateTreeBioMass')
+
+    # def calcStumpVolume(self):
+    #     print('calculateStumpVolume')
     
-    def calcTopBiomass(self):
-        print('calculateTopBiomass')    
+    # def calcTopBiomass(self):
+    #     print('calculateTopBiomass')    
 
-    def calcAdjustmentFactor(self):
-        print('calculateAdjustmentFactor')       
+    # def calcAdjustmentFactor(self):
+    #     print('calculateAdjustmentFactor')       
 
-    def applyAdjustmentFactor(self):
-        print('applyAdjustmentFactor')
+    # def applyAdjustmentFactor(self):
+    #     print('applyAdjustmentFactor')
 
 
 if __name__ == '__main__':
     crm = Component_Ratio_Method()
-    print(crm.calcTotalAGBioMassJenkins(651, 7))
+    species = crm._getSpeciesData(746)
+    print(crm._calcStumpVolumeOutsideBark(species, 10.5))
+    print(crm._calcStumpVolumeInsideBark(species, 10.5))
 
 
 
