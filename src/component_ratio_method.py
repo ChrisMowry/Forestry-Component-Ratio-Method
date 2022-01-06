@@ -434,16 +434,193 @@ class Component_Ratio_Method(object):
 
         # Pacific Northwest (AK, CA, OR, WA) Table 4
         elif region_id in ['S26LCA', 'S26LCAMIX', 
-                           'S26LEOR', 'S26LWOR', 'S26LORJJ'
+                           'S26LEOR', 'S26LWOR', 'S26LORJJ',
                            'S26LEWA', 'S26LWWA', 'S26LWACF',
                            'S27LAK', 'S27LAK1AB', 'S27LAK1C', 'S27LAK2A', 'S27LAK2B',
                            'S27LAK2C', 'S27LAK3A', 'S27LAK3B', 'S27LAK3C', 'S27LAK3D',
                            'S27LAK3E', 'S27LAK3F']:
 
 
-            # TODO implement PNW logic here...
-            print( 'table 4 ')
+            # Table 4 Row 1
+            if ((( region_id in ['S26LCA', 'S26LCAMIX', 'S26LEOR', 'S26LWOR', 
+                                 'S26LORJJ','S26LEWA', 'S26LWWA', 'S26LWACF'] )
+                   and ( species['species_cd'] in [11, 42, 93, 98, 231, 242, 352])) 
 
+                or (( region_id in ['S26LEOR', 'S26LEWA', 'S26LWWA', 'S26LWACF'])
+                      and ( species['species_cd'] == 15 ))
+
+                or (( region_id in ['S26LEOR', 'S26LWOR', 'S26LORJJ', 'S26LEWA', 'S26LWWA', 'S26LWACF'])
+                      and ( species['species_cd'] in [17, 19, 22, 73, 101, 108, 119] ))
+                  
+                or (( region_id == 'S26LEOR')
+                      and ( species['species_cd'] == 20 ))
+
+                or (( region_id in ['S26LCA', 'S26LCAMIX'])
+                      and ( species['species_cd'] in [41, 251, 746, 747, 748, 760, 766, 768] ))
+
+                or (( region_id in ['S26LEWA', 'S26LWWA', 'S26LWACF'])
+                      and ( species['species_cd'] == 72 ))                
+
+                or (( region_id in ['S26LCA', 'S26LCAMIX', 'S26LEOR', 'S26LWOR', 'S26LORJJ', 'S26LEWA'])
+                      and ( species['species_cd'] == 92 )) 
+
+                or (( region_id in ['S26LEOR', 'S26LWOR', 'S26LORJJ', 'S26LWWA'])
+                      and ( species['species_cd'] == 103 )) 
+
+                or (( region_id in ['S26LWOR', 'S26LORJJ'])
+                      and ( species['species_cd'] in [113, 130] )) 
+
+                or (( region_id in ['S26LEOR', 'S26LWOR'])
+                      and ( species['species_cd'] == 341 ))
+
+                or (( region_id in ['S26LCA', 'S26LCAMIX', 'S26LEOR', 'S26LORJJ','S26LEWA', 'S26LWWA', 'S26LWACF'])
+                      and ( species['species_cd'] == 351 )) 
+
+                or (( region_id == 'S26LCA')
+                      and ( species['species_cd'] == 611))):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 1')
+
+            # Table 4 Row 2
+            elif ((( region_id in ['S26LCA', 'S26LCAMIX'] )
+                   and ( species['species_cd'] in [14, 19, 22])) 
+
+                or (( region_id in ['S26LCA', 'S26LCAMIX','S26LWOR', 'S26LORJJ'])
+                      and ( species['species_cd'] == 20))
+
+                or (( region_id in ['S26LCA', 'S26LCAMIX','S26LEOR', 'S26LWOR', 'S26LORJJ'])
+                      and ( species['species_cd'] == 21))):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 2')
+
+            # Table 4 Row 3
+            elif ((( region_id in ['S26LCA', 'S26LCAMIX','S26LWOR', 'S26LORJJ'] )
+                   and ( species['species_cd'] == 15)) 
+
+                or (( region_id in ['S26LCA', 'S26LCAMIX'])
+                      and ( species['species_cd'] == 17))):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 3')
+
+            # Table 4 Row 4
+            elif ((( region_id in ['S26LEOR', 'S26LWOR', 'S26LORJJ', 'S26LEWA', 'S26LWWA', 'S26LWACF'] )
+                   and ( species['species_cd'] == 41)) 
+
+                or (( region_id in ['S26LCA', 'S26LCAMIX'])
+                      and ( species['species_cd'] in [50, 51, 54, 55]))
+
+                or (( region_id == 'S26LCA')
+                      and ( species['species_cd'] in [52, 53]))                     
+                      
+                or (( region_id in ['S26LCA', 'S26LCAMIX', 
+                                    'S26LEOR', 'S26LWOR', 'S26LORJJ',
+                                    'S26LEWA', 'S26LWWA', 'S26LWACF'])
+                      and ( species['species_cd'] == 81))):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 4')
+
+            # Table 4 Row 5
+            elif ((( region_id in ['S26LCA', 'S26LCAMIX', 'S26LEOR', 'S26LWOR', 'S26LORJJ'] )
+                   and ( species['species_cd'] in [62, 65, 66]))                   
+                      
+                or (( region_id in ['S26LCA', 'S26LCAMIX', 
+                                    'S26LEOR', 'S26LWOR', 'S26LORJJ',
+                                    'S26LEWA', 'S26LWWA', 'S26LWACF'])
+                      and ( species['species_cd'] in [133, 321, 475]))):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 5')
+
+            # Table 4 Row 6
+            elif ((( region_id in ['S26LCA', 'S26LCAMIX', 
+                                    'S26LEOR', 'S26LWOR', 'S26LORJJ',
+                                    'S26LEWA', 'S26LWWA', 'S26LWACF'])
+                      and ( species['species_cd'] == 64))):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 6')
+
+            # Table 4 Row 7
+            elif ((( region_id in ['S26LCA', 'S26LCAMIX'] )
+                   and ( species['species_cd'] in [102, 103, 104, 108, 113, 124, 142]))                   
+                      
+                or (( region_id in ['S26LCA', 'S26LCAMIX', 
+                                    'S26LEOR', 'S26LWOR', 'S26LORJJ'])
+                      and ( species['species_cd'] == 120))):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 7')
+
+            # Table 4 Row 8
+            elif ((( region_id in ['S26LCA', 'S26LCAMIX'] )
+                   and ( species['species_cd'] in [101, 109, 119, 127, 137]))                   
+                      
+                or (( region_id in ['S26LCA', 'S26LCAMIX', 'S26LWOR', 'S26LORJJ'])
+                      and ( species['species_cd'] in [116, 122]))
+
+                or (( region_id in ['S26LCA', 'S26LCAMIX', 
+                                    'S26LEOR', 'S26LWOR', 'S26LORJJ',
+                                    'S26LEWA', 'S26LWWA', 'S26LWACF'])
+                      and ( species['species_cd'] == 117))):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 8')
+
+            # Table 4 Row 9
+            elif ((( region_id == 'S26LEOR' )
+                   and ( species['species_cd'] == 116))                   
+                      
+                or (( region_id in ['S26LEOR', 'S26LEWA', 'S26LWWA', 'S26LWACF'])
+                      and ( species['species_cd'] == 122))
+
+                or (( region_id in ['S26LEOR', 'S26LEWA'])
+                      and ( species['species_cd'] == 202))):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 9')
+
+            # Table 4 Row 10
+            elif (( region_id in ['S26LCA', 'S26LCAMIX']  )
+                   and ( species['species_cd'] in [201, 202])):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 10')
+
+             # Table 4 Row 11
+            elif (( region_id in ['S26LWOR', 'S26LORJJ', 'S26LWWA', 'S26LWACF']  )
+                   and ( species['species_cd'] == 202)):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 11')
+
+             # Table 4 Row 12
+            elif (( region_id in ['S26LCA', 'S26LCAMIX', 'S26LEOR', 'S26LWOR', 'S26LORJJ']  )
+                   and ( species['species_cd'] in [211, 212])):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 12')
+
+            # Table 4 Row 13
+            elif (( region_id in ['S26LCA', 'S26LCAMIX', 
+                                  'S26LEOR', 'S26LWOR', 'S26LORJJ',
+                                  'S26LEWA', 'S26LWWA', 'S26LWACF'])
+                   and ( species['species_cd'] == 263)):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 13')
+
+            # Table 4 Row 14
+            elif (( region_id in ['S26LCA', 'S26LCAMIX', 
+                                  'S26LEOR', 'S26LWOR', 'S26LORJJ',
+                                  'S26LEWA', 'S26LWWA', 'S26LWACF'])
+                   and ( species['species_cd'] in [264, 299])):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 14')   
 
         else:
             raise Exception("Unknown region!")
