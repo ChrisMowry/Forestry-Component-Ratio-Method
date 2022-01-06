@@ -56,6 +56,10 @@ class Component_Ratio_Method(object):
 
         return species_data
 
+    def _getConfigSpeciesCode(self, species_cd, region_id):
+        # TODO implement this code here
+        return 0
+
 
     def _calcTotalAGBioMassJenkins(self, species, dbh):
 
@@ -215,7 +219,12 @@ class Component_Ratio_Method(object):
                 self._calcStumpBiomassLbs(species, dbh, height))
 
 
-    def getVOLCFGRS(self, species, region_id, x1, x2, x3, v1, v2):
+    def getVOLCFGRS(self, species, region_id, x1, x2, x3):
+
+        volcfgrs = None
+        adjSpeciesId = self._getConfigSpeciesCode(species['species_cd'], region_id )
+
+        # TODO change species['species_cd'] to adjSpeciesId
 
         # Northeastern States (CT,DE,ME,MD,MA,NH,NJ,NY,OH,PA,RI,VT,WV) Table 1
         # Table 1 Row 5
@@ -224,20 +233,22 @@ class Component_Ratio_Method(object):
             # TODO implement the calculation here
             print('Table 1 Row 5')
 
+            volcfgrs
+
         # Southern States (AL,AR,FL,GA,KY,LA,MS,NC,OK,SC,TN,TX,VA) Table 2
         elif region_id == 'S33':
 
             # Table 2 Row 1
-            if species['species_cd'] not in [58, 59, 69, 106, 140, 
-                                             141, 61, 63, 66, 303,
-                                             321, 755, 756, 758, 810,
-                                             843, 846, 867, 8513, 122, 202]:
+            if adjSpeciesId not in [58, 59, 69, 106, 140, 
+                                    141, 61, 63, 66, 303,
+                                    321, 755, 756, 758, 810,
+                                    843, 846, 867, 8513, 122, 202]:
 
                 # TODO implement the calculation here
                 print('Table 2 Row 1')
 
             # Table 2 Row 2
-            elif species['species_cd'] in [58, 59, 69, 106, 140, 141]:
+            elif adjSpeciesId in [58, 59, 69, 106, 140, 141]:
 
                 # TODO implement the calculation here
                 print('Table 2 Row 2')
@@ -397,7 +408,6 @@ class Component_Ratio_Method(object):
                 # TODO implement the calculation here
                 print('Table 3 Row 11')
 
-
             # Table 3 Row 12
             elif ((region_id in ['S22LCOE', 'S22LCOW', 'S22LID', 'S22LMTE', 'S22LMTW',
                                   'S22LNV', 'S22LUTNE', 'S22LUTSW','S22LWYE', 'S22LWYW'])
@@ -405,7 +415,6 @@ class Component_Ratio_Method(object):
                 
                 # TODO implement the calculation here
                 print('Table 3 Row 12')
-
 
             # Table 3 Row 7
             elif species['species_cd'] in [58, 59, 62, 63, 65, 
@@ -439,7 +448,6 @@ class Component_Ratio_Method(object):
                            'S27LAK', 'S27LAK1AB', 'S27LAK1C', 'S27LAK2A', 'S27LAK2B',
                            'S27LAK2C', 'S27LAK3A', 'S27LAK3B', 'S27LAK3C', 'S27LAK3D',
                            'S27LAK3E', 'S27LAK3F']:
-
 
             # Table 4 Row 1
             if ((( region_id in ['S26LCA', 'S26LCAMIX', 'S26LEOR', 'S26LWOR', 
@@ -622,44 +630,110 @@ class Component_Ratio_Method(object):
                 # TODO implement the calculation here
                 print('Table 4 Row 14')   
 
+            # Table 4 Row 15
+            elif (( region_id in ['S26LCA', 'S26LCAMIX', 'S26LEOR', 'S26LWOR', 'S26LORJJ'])
+                   and ( species['species_cd'] in [312, 313, 361, 431, 540, 
+                                                   542, 815, 818, 901, 997])
+                   
+                or ((region_id == 'S26LWOR')
+                    and species['species_cd'] == 320 )
+
+                or ((region_id in ['S26LCA', 'S26LCAMIX'])
+                    and species['species_cd'] in [330, 333, 421, 492, 500, 
+                                                  600, 602, 660, 661, 730, 
+                                                  763, 801, 807, 811, 826, 
+                                                  839, 920, 998, 999] )
+
+                or ((region_id in ['S26LCA', 'S26LCAMIX', 'S26LWOR', 'S26LORJJ'])
+                    and species['species_cd'] in [631, 805, 981])
+                    
+                or ((region_id == 'S26LCA')
+                    and species['species_cd'] in [547, 604, 731, 922])
+
+                or ((region_id in ['S26LCA', 'S26LCAMIX', 'S26LWOR', 'S26LEWA'])
+                    and species['species_cd'] == 603)
+
+                or ((region_id in ['S26LCA', 'S26LCAMIX', 'S26LORJJ'])
+                    and species['species_cd'] == 821)):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 15')
+
+            # Table 4 Row 16
+            elif (( region_id in ['S26LEWA', 'S26LWWA', 'S26LWACF'])
+                   and ( species['species_cd'] in [312, 313, 370, 431, 540,
+                                                   542, 815, 901, 997])
+                   
+                or ((region_id == 'S26LWOR')
+                    and species['species_cd'] in [351, 926] )
+
+                or ((region_id in ['S26LWWA', 'S26LWACF'])
+                    and species['species_cd'] == 361 )
+
+                or ((region_id in ['S26LCA', 'S26LCAMIX', 
+                                  'S26LEOR', 'S26LWOR', 'S26LORJJ',
+                                  'S26LEWA', 'S26LWWA', 'S26LWACF'] )
+                    and species['species_cd'] in [374, 375, 591])
+                    
+                or ((region_id in ['S26LEOR', 'S26LWOR', 'S26LORJJ',
+                                   'S26LEWA', 'S26LWWA', 'S26LWACF'] )
+                    and species['species_cd'] in [492, 500, 602, 660, 661, 
+                                                  730, 746, 747, 760, 763,
+                                                  766, 768, 920, 998, 999])
+
+                or ((region_id in ['S26LWOR', 'S26LORJJ'])
+                    and species['species_cd'] == 510)
+
+                or ((region_id in ['S26LEOR', 'S26LWOR', 'S26LORJJ', 'S26LWWA', 'S26LWACF'])
+                    and species['species_cd'] == 600)
+
+                or ((region_id in ['S26LEOR', 'S26LWWA', 'S26LWACF'])
+                    and species['species_cd'] == 631)
+
+                or ((region_id == 'S26LEWA')
+                     and species['species_cd'] == 818)):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 16')
+
+            # Table 4 Row 17
+            elif (( region_id in ['S26LCA', 'S26LCAMIX'])
+                   and ( species['species_cd'] == 510)
+                   
+                or (region_id == 'S26LCA')
+                    and species['species_cd'] == 511 ):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 17')   
+
+            # Table 4 Row 18
+            elif (( region_id in ['S26LCA', 'S26LCAMIX'])
+                   and ( species['species_cd'] == 756)
+                   
+                or ((region_id == 'S26LCA')
+                    and species['species_cd'] == 758 )
+                    
+                or ((region_id in ['S26LCA', 'S26LCAMIX', 'S26LEOR', 'S26LEWA'])
+                    and species['species_cd'] == 990 )                
+                ):
+
+                # TODO implement the calculation here
+                print('Table 4 Row 18')
+
+            # Table 4 Row 19
+            elif ( region_id in ['S27LAK', 'S27LAK1AB', 'S27LAK1C', 'S27LAK2A', 'S27LAK2B',
+                                 'S27LAK2C', 'S27LAK3A', 'S27LAK3B', 'S27LAK3C', 'S27LAK3D',
+                                 'S27LAK3E', 'S27LAK3F']):
+                raise Exception("Alaska is unsupported at this time.")
+
         else:
             raise Exception("Unknown region!")
 
 
-
-    #def getVOLCFSND(self, region_id):
-
-
-    # def _calcDRYBIO_BOLE(self):
-
-
-    # def convertSoundVolumeToBiomass(self):
-    #     print('convertSoundVolumeToBioMass')
-
-    # def calcBarkBiomass(self):
-    #     print('calculateBarkBioMass')
-
-    # def calcTreeBiomass(self):
-    #     print('calculateTreeBioMass')
-
-    # def calcStumpVolume(self):
-    #     print('calculateStumpVolume')
-    
-    # def calcTopBiomass(self):
-    #     print('calculateTopBiomass')    
-
-    # def calcAdjustmentFactor(self):
-    #     print('calculateAdjustmentFactor')       
-
-    # def applyAdjustmentFactor(self):
-    #     print('applyAdjustmentFactor')
-
-
 if __name__ == '__main__':
     crm = Component_Ratio_Method()
-    species = crm._getSpeciesData(746)
-    print(crm._calcStumpVolumeOutsideBark(species, 10.5))
-    print(crm._calcStumpVolumeInsideBark(species, 10.5))
+    species = crm._getSpeciesData(58)
+    crm.getVOLCFGRS(species, 'S33', 0, 0, 0)
 
 
 
