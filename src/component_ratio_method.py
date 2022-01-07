@@ -703,10 +703,8 @@ class Component_Ratio_Method(object):
 
                 if drc >= 3.0 and height > 0.0 and stem_count == 1:
                     volcfgrs = math.pow((b0 + b1 * math.pow(math.pow(drc, 2.0) * height, b2) + b3 ), 3.0)
-                        
                 elif drc >= 3.0 and height > 0.0 and stem_count != 1:
                     volcfgrs = math.pow((b0 + b1 * math.pow(math.pow(drc, 2.0) * height, b2)), 3.0)
-
                 else:
                     volcfgrs = 0.1
 
@@ -762,8 +760,16 @@ class Component_Ratio_Method(object):
                 or (( region_id == 'S26LCA')
                       and ( adjGrossVolSpeciesId == 611))):
 
-                # TODO implement the calculation here
                 print('Table 4 Row 1')
+                if dbh == None or height == None:
+                    raise Exception('DBH and height are needed.')
+                
+                a = math.pow(10.0, b1) * math.pow(dbh, b2) * math.pow(height, b3) * b4
+                b = b5 * (1.0 + b6 * math.pow(math.e, b7 * (dbh/10.0)))
+                c = (b8 * math.pow(dbh , 2.0) + b9) + b10
+                d = (b11 * math.pow(dbh , 2.0) - b9) / b4
+
+                volcfgrs = a / (b * c * d)
 
             # Table 4 Row 2
             elif ((( region_id in ['S26LCA', 'S26LCAMIX'] )
@@ -775,8 +781,20 @@ class Component_Ratio_Method(object):
                 or (( region_id in ['S26LCA', 'S26LCAMIX','S26LEOR', 'S26LWOR', 'S26LORJJ'])
                       and ( adjGrossVolSpeciesId == 21))):
 
-                # TODO implement the calculation here
                 print('Table 4 Row 2')
+                if dbh == None or height == None:
+                    raise Exception('DBH and height are needed.')
+
+                if dbh < 6.0:
+                    dbh = 6.0
+
+                v1 = b2 + b3 * (dbh / height)
+                if v1 > 0.4:
+                    v1 = 0.4
+                if v1 < 0.3:
+                    v1 = 0.3
+
+                volcfgrs = b1 * math.pow(dbh, 2.0) * height * v1
 
             # Table 4 Row 3
             elif ((( region_id in ['S26LCA', 'S26LCAMIX','S26LWOR', 'S26LORJJ'] )
@@ -785,8 +803,20 @@ class Component_Ratio_Method(object):
                 or (( region_id in ['S26LCA', 'S26LCAMIX'])
                       and ( adjGrossVolSpeciesId == 17))):
 
-                # TODO implement the calculation here
                 print('Table 4 Row 3')
+                if dbh == None or height == None:
+                    raise Exception('DBH and height are needed.')
+
+                if dbh < 6.0:
+                    dbh = 6.0
+
+                v1 = b2 + b3 * math.pow(height, -1) + b4 * (math.pow(dbh, 2.0) / height)
+                if v1 > 0.4:
+                    v1 = 0.4
+                if v1 < 0.3:
+                    v1 = 0.3
+
+                volcfgrs = b1 * math.pow(dbh, 2.0) * height * v1
 
             # Table 4 Row 4
             elif ((( region_id in ['S26LEOR', 'S26LWOR', 'S26LORJJ', 'S26LEWA', 'S26LWWA', 'S26LWACF'] )
@@ -803,8 +833,18 @@ class Component_Ratio_Method(object):
                                     'S26LEWA', 'S26LWWA', 'S26LWACF'])
                       and ( adjGrossVolSpeciesId == 81))):
 
-                # TODO implement the calculation here
                 print('Table 4 Row 4')
+                if dbh == None or height == None:
+                    raise Exception('DBH and height are needed.')
+
+                if dbh < 6.0:
+                    dbh = 6.0
+
+                v1 = b2 + b3 * math.pow(height, -1)
+                if v1 < 0.27:
+                    v1 = 0.27
+
+                volcfgrs = b1 * math.pow(dbh, 2.0) * height * v1
 
             # Table 4 Row 5
             elif ((( region_id in ['S26LCA', 'S26LCAMIX', 'S26LEOR', 'S26LWOR', 'S26LORJJ'] )
@@ -815,8 +855,19 @@ class Component_Ratio_Method(object):
                                     'S26LEWA', 'S26LWWA', 'S26LWACF'])
                       and ( adjGrossVolSpeciesId in [133, 321, 475]))):
 
-                # TODO implement the calculation here
                 print('Table 4 Row 5')
+                if drc == None or height == None or stem_count == None:
+                    raise Exception('Diameter at root collar, height and # of stems are needed.')
+
+                if drc >= 3.0 and height > 0.0 and stem_count == 1:
+                    volcfgrs = math.pow((b0 + b1 * math.pow(math.pow(drc, 2.0) * height, b2) + b3 ), 3.0)
+                elif drc >= 3.0 and height > 0.0 and stem_count != 1:
+                    volcfgrs = math.pow((b0 + b1 * math.pow(math.pow(drc, 2.0) * height, b2)), 3.0)
+                else:
+                    volcfgrs = 0.1
+
+                if volcfgrs <= 0:
+                    volcfgrs = 0.1
 
             # Table 4 Row 6
             elif ((( region_id in ['S26LCA', 'S26LCAMIX', 
@@ -824,9 +875,26 @@ class Component_Ratio_Method(object):
                                     'S26LEWA', 'S26LWWA', 'S26LWACF'])
                       and ( adjGrossVolSpeciesId == 64))):
 
-                # TODO implement the calculation here
                 print('Table 4 Row 6')
+                if dbh == None or height == None:
+                    raise Exception('DBH and height are needed.')
 
+                if dbh > 6.0:
+                    dbh = 6.0
+
+                a = (b9 * dbh * height) / (height + b10)
+                b = height * math.pow(height / (height + b10), 2.0)
+                c = b6 * math.pow(dbh, 2.0)
+                v1 = c * ( b7 + b8 * height - a ) * b
+
+                if v1 <= 0:
+                    v1 = 2.0
+
+                volcfgrs = ((v1 + b1) / (b2 + b3 * math.pow(math.e, b4 * dbh))) + b5
+
+                if volcfgrs <= 0:
+                    volcfgrs = 1.0
+            
             # Table 4 Row 7
             elif ((( region_id in ['S26LCA', 'S26LCAMIX'] )
                    and ( adjGrossVolSpeciesId in [102, 103, 104, 108, 113, 124, 142]))                   
